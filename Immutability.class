@@ -1,0 +1,111 @@
+// Online Java Compiler
+// Use this editor to write, compile and run your Java code online
+
+class Main {
+    public static void main(String[] args) {
+        System.out.println("Try programiz.pro");
+    }
+}
+//Date scenario, use defensive copy in constructor and in getter
+public class final Employee{
+    private final Date joiningDate;
+    
+    public Employee(Date joiningDate){
+        this.joiningDate= new Date(joiningDate.getTime());
+    }
+    
+    public Date getJoiningDate(){
+        return new Date(joiningDate.getTime());
+    }
+}
+
+// Other better approach is , we can use LocaDate from java.time package, it is already immutable
+private final LocalDate joiningDate;
+//LocalDate, Instant, ZonedDateTime are immutable by design
+
+
+//not TRULY immutable because of List
+public class final Employee{
+   private final List<String> skills;
+   
+   public Employee(List<String> skills){
+       this.skills= skills; // wrong here, used direct reference
+   }
+   
+   public List<String> getSkills() {
+       return skills; //wrong here, exposed direct reference
+   }
+}
+//Issue
+emp.getSkills().add("Hacking"); // immutability compromised
+// fixed immutablity with defensive copy
+public class final Employee{
+   private final List<String> skills;
+   
+   public Employee(List<String> skills){
+       if(skills==null){
+           this.skills= Collections.emptyList();
+       } else {
+           this.skills= new ArrayList<>(skills); 
+       }
+      
+   }
+   
+   public List<String> getSkills {
+       return Collections.unmodifiableList(new ArrayList<>(skills)); // creates read only wrapper
+   }
+}
+//Or
+
+public class final Employee{
+   private final List<String> skills;
+   
+   public Employee(List<String> skills){
+       
+           this.skills= List.copyOf(skills); 
+       
+      
+   }
+   
+   public List<String> getSkills {
+       return skills
+   }
+}
+/*
+Now:
+
+skills is a new internal list
+
+It is already unmodifiable
+
+Caller can’t mutate it
+
+No other reference exists
+
+So returning it is safe:
+
+public List<String> getSkills() {
+    return skills; // ✅ no defensive copy needed
+}
+
+*/
+//truly immutable class
+public final class Employee{
+    private final String name;
+    private final int age;
+    
+    public Employee(String name, int age){
+        this.name= name;
+        this.age= age;
+    }
+    
+    //no setters
+    
+    public String getName(){
+        return name;
+    }
+    
+    public int getAge(){
+        return age;
+    }
+}
